@@ -83,3 +83,29 @@ resource "aws_route_table_association" "public" {
   subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
 }
+
+
+
+resource "aws_instance" "web_server" {
+  ami           = "ami-0c7217cdde317cfec"  # Amazon Linux 2023 AMI for us-east-1
+  instance_type = var.instance_type
+  subnet_id     = aws_subnet.public[0].id
+  
+  vpc_security_group_ids = [aws_security_group.web.id]
+  associate_public_ip_address = true
+  key_name      = var.key_name
+
+  
+  root_block_device {
+    volume_size = 8
+    volume_type = "gp3"
+    encrypted   = true
+  }
+
+  tags = {
+    Name        = "web-server"
+    Environment = "production"
+  }
+}
+
+
