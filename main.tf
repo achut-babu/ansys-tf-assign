@@ -1,9 +1,9 @@
-# Configure AWS Provider
+
 provider "aws" {
   region = var.aws_region  
 }
 
-# Create VPC
+
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   instance_tenancy     = "default"
@@ -16,12 +16,12 @@ resource "aws_vpc" "main" {
   }
 }
 
-# Get available AZs in the region
+
 data "aws_availability_zones" "available" {
   state = "available"
 }
 
-# Create 3 public subnets
+
 resource "aws_subnet" "public" {
   count             = 3
   vpc_id            = aws_vpc.main.id
@@ -37,7 +37,7 @@ resource "aws_subnet" "public" {
 }
 
 
-# Create 3 private subnets
+
 resource "aws_subnet" "private" {
   count             = 3
   vpc_id            = aws_vpc.main.id
@@ -62,7 +62,7 @@ resource "aws_internet_gateway" "main" {
   }
 }
 
-# Create public route table
+
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -77,7 +77,7 @@ resource "aws_route_table" "public" {
   }
 }
 
-# Associate public subnets with public route table
+
 resource "aws_route_table_association" "public" {
   count          = 3
   subnet_id      = aws_subnet.public[count.index].id
@@ -134,7 +134,7 @@ resource "aws_security_group" "web" {
   }
 }
 
-# Make sure your EC2 instance is using this security group
+
 resource "aws_instance" "web_server" {
   ami           = "ami-0c7217cdde317cfec"  
   instance_type = var.instance_type
