@@ -13,7 +13,7 @@ This project creates a production-ready AWS VPC with public and private subnets 
 - Public Route Table
 - Private Route Table
 - Security Group for Web Traffic
-- EC2 Instance with Apache Web Server
+- EC2 Instance with Nginx
 
 ## Prerequisites
 
@@ -22,6 +22,21 @@ This project creates a production-ready AWS VPC with public and private subnets 
 - AWS CLI configured with appropriate credentials
 - SSH key pair created in AWS
 
+## Important note regarding key pair
+
+This code assumes you have created the pem file and setup the variable in vars.tf file, default value is set as my-key.pem
+
+To create the key pair you can use the following commands
+
+```
+openssl genrsa -out my-key.pem 2048
+
+openssl rsa -in my-key.pem -pubout -out my-key.pub
+
+chmod 400 my-key.pem
+chmod 444 my-key.pub
+
+```
 ## Project Structure
 
 .
