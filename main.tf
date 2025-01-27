@@ -144,17 +144,86 @@ resource "aws_instance" "web_server" {
   associate_public_ip_address = true
   key_name      = var.key_name
 
-  root_block_device {
+  user_data = <<-EOF
+              #!/bin/bash
+              # Update the system
+              dnf update -y
+
+              # Install nginx
+              dnf install nginx -y
+
+              # Start and enable Nginx service
+              systemctl start nginx
+              systemctl enable nginx
+
+              # Create a custom index page
+              cat <<HTML > /usr/share/nginx/html/index.html
+              <!DOCTYPE html>
+              <html>
+              <head>
+                  <title>Welcome to Nginx on AWS</title>
+                  <style>
+                      body {
+                          font-family: Arial, sans-serif;
+                          margin: 40px auto;
+                          max-width: 650px;
+                          line-height: 1.6;
+                          padding: 0 10px;
+                          color: #333;
+                      }
+                      h1 {
+                          color: #2196F3;
+                          text-align: center;
+                      }
+                  </style>
+              </head>
+              <body>
+                  <h1>Welcome to Nginx on AWS</h1>
+                  <p>This page is served by Nginx running on an AWS EC2 instance.</p>
+                  <p>Instance ID: $(curl -s http://169.254.169.254/latest/meta-data/instance-id)</p>
+                  <p>Availability Zone: $(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)</p>
+              </body>
+              </html>
+              HTML
+
+            
+              chown -R nginx:nginx /usr/share/nginx/html
+              chmod -R 755 /usr/share/nginx/html
+              EOF
+
+ 
+
+  
+
+root_block_device {
     volume_size = 8
     volume_type = "gp3"
     encrypted   = true
   }
-
+  
   tags = {
-    Name        = "web-server"
+    Name        = "nginx-web-server"
     Environment = "production"
   }
 }
+# Output the instance's public IP and DNS
+output "web_server_public_ip" {
+  value       = aws_instance.web_server.public_ip
+  description = "Public IP address of the web server"
+}
+
+output "web_server_public_dns" {
+  value       = aws_instance.web_server.public_dns
+  description = "Public DNS of the web server"
+}
+
+output "web_server_url" {
+  value       = "http://${aws_instance.web_server.public_dns}"
+  description = "URL of the web server"
+}
+
+  
+
 
 
 resource "aws_route_table" "private" {
