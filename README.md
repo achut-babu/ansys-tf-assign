@@ -25,10 +25,16 @@ This project creates a production-ready AWS VPC with public and private subnets 
 ## Project Structure
 
 .
-├──-------  main.tf # Main infrastructure configuration
-├──-------  variables.tf # Variable declarations
-├──-------  outputs.tf # Output declarations
-└──-------  README.md # This file
+├──   main.tf # Main infrastructure configuration
+
+
+├──  variables.tf # Variable declarations
+
+
+├─    outputs.tf # Output declarations
+
+
+└──   README.md # This file
 
 
 ## Required Variables
