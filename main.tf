@@ -147,14 +147,14 @@ resource "aws_instance" "web_server" {
   user_data = <<-EOF
               #!/bin/bash
               # Update the system
-              dnf update -y
+              sudo apt update && sudo apt upgrade -y
 
               # Install nginx
-              dnf install nginx -y
+              sudo apt install nginx -y
 
               # Start and enable Nginx service
-              systemctl start nginx
-              systemctl enable nginx
+              sudo systemctl start nginx
+              sudo systemctl enable nginx
 
               # Create a custom index page
               cat <<HTML > /usr/share/nginx/html/index.html
